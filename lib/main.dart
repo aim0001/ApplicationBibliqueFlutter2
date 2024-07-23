@@ -59,9 +59,10 @@ class _MainAppState extends State<MainApp> {
         );
 
         // Charge les versets et les livres selon la langue sélectionnée
+        await FetchBooks.execute(mainProvider: mainProvider);
         await FetchVerses.execute(
             mainProvider: mainProvider, languageCode: _selectedLanguage);
-        await FetchBooks.execute(mainProvider: mainProvider);
+        
       },
     );
   }

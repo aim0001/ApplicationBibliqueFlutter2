@@ -22,6 +22,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+ def keystorePropertiesFile = rootProject.file('key.properties')
+ if (keystorePropertiesFile.exists()) {
+     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+ }
+
 android {
     namespace "com.example.application_biblique"
     compileSdk flutter.compileSdkVersion
@@ -52,13 +58,14 @@ android {
     }
 
     signingConfigs {
-        release {
-            keyAlias 'upload-key'
-            keyPassword 'Evangile'
-            storeFile file('evangile.jks')
-            storePassword 'Evangile'
-        }
+    release {
+        keyAlias keystoreProperties['keyAlias']
+        keyPassword keystoreProperties['keyPassword']
+        storeFile file(keystoreProperties['storeFile'])
+        storePassword keystoreProperties['storePassword']
     }
+}
+
 
     buildTypes {
         release {

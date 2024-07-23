@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:application_biblique/services/fetch_books.dart';
+import 'package:application_biblique/services/fetch_verses.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:application_biblique/models/book.dart';
@@ -39,9 +41,9 @@ class _BooksPageState extends State<BooksPage> {
 
   @override
   void initState() {
-    super.initState();
-    _translateBookTitles();
+    super.initState(); 
     _translateTestamentTitles();
+    _translateBookTitles();
   }
 
   Future<void> _translateBookTitles() async {
@@ -49,6 +51,11 @@ class _BooksPageState extends State<BooksPage> {
         Provider.of<MainProvider>(context, listen: false);
     books = mainProvider.books;
 
+await Future.wait([
+      FetchVerses.execute(
+          mainProvider: mainProvider, languageCode: widget.selectedLanguage),
+      FetchBooks.execute(mainProvider: mainProvider),
+    ]);
     print("Liste des livres : ${books.map((book) => book.title).join(', ')}");
 
     print(widget.selectedLanguage);
@@ -91,6 +98,7 @@ class _BooksPageState extends State<BooksPage> {
   }
 
   Future<void> _translateTestamentTitles() async {
+
     stringNTestament =
         getTranslatedBookTitle("Nouveau Testament", widget.selectedLanguage);
     stringOTestament =
@@ -112,9 +120,9 @@ class _BooksPageState extends State<BooksPage> {
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(
       builder: (context, mainProvider, child) {
-        List<Book> oldTestamentBooks =
+
             books.where((book) => _isOldTestament(book.title)).toList();
-        List<Book> newTestamentBooks =
+
             books.where((book) => _isNewTestament(book.title)).toList();
 
         return Scaffold(
@@ -348,286 +356,22 @@ class _BooksPageState extends State<BooksPage> {
     "de": {
       "Nouveau Testament": "Neues Testament",
       "Ancien Testament": "Altes Testament",
-      "Livres": "Bücher",
-      "Genèse": "Genesis",
-      "Exode": "Exodus",
-      "Lévitique": "Levitikus",
-      "Nombres": "Numeri",
-      "Deutéronome": "Deuteronomium",
-      "Josué": "Josua",
-      "Juges": "Richter",
-      "Ruth": "Ruth",
-      "I Samuel": "I Samuel",
-      "II Samuel": "II Samuel",
-      "I Rois": "I Könige",
-      "II Rois": "II Könige",
-      "I Chroniques": "I Chronik",
-      "II Chroniques": "II Chronik",
-      "Esdras": "Esra",
-      "Néhémie": "Nehemia",
-      "Esther": "Ester",
-      "Job": "Hiob",
-      "Psaumes": "Psalmen",
-      "Proverbes": "Sprüche",
-      "Ecclésiaste": "Prediger",
-      "Cantique des Cantiques": "Hohelied",
-      "Ésaïe": "Jesaja",
-      "Jérémie": "Jeremia",
-      "Lamentations": "Klagelieder",
-      "Ézéchiel": "Hesekiel",
-      "Daniel": "Daniel",
-      "Osée": "Hosea",
-      "Joël": "Joel",
-      "Amos": "Amos",
-      "Abdias": "Obadja",
-      "Jonas": "Jona",
-      "Michée": "Micha",
-      "Nahum": "Nahum",
-      "Habacuc": "Habakkuk",
-      "Sophonie": "Zefanja",
-      "Aggée": "Haggai",
-      "Zacharie": "Sacharja",
-      "Malachie": "Maleachi",
-      "Matthieu": "Matthäus",
-      "Marc": "Markus",
-      "Luc": "Lukas",
-      "Jean": "Johannes",
-      "Actes": "Apostelgeschichte",
-      "Romains": "Römer",
-      "I Corinthiens": "I Korinther",
-      "II Corinthiens": "II Korinther",
-      "Galates": "Galater",
-      "Éphésiens": "Epheser",
-      "Philippiens": "Philipper",
-      "Colossiens": "Kolosser",
-      "I Thessaloniciens": "I Thessalonicher",
-      "II Thessaloniciens": "II Thessalonicher",
-      "I Timothée": "I Timotheus",
-      "II Timothée": "II Timotheus",
-      "Tite": "Titus",
-      "Philémon": "Philemon",
-      "Hébreux": "Hebräer",
-      "Jacques": "Jakobus",
-      "I Pierre": "I Petrus",
-      "II Pierre": "II Petrus",
-      "I Jean": "I Johannes",
-      "II Jean": "II Johannes",
-      "III Jean": "III Johannes",
-      "Jude": "Judas",
-      "Apocalypse": "Offenbarung"
+      "Livres": "Bücher"
     },
     "es": {
       "Nouveau Testament": "Nuevo Testamento",
       "Ancien Testament": "Antiguo Testamento",
       "Livres": "Libros",
-      "Genèse": "Génesis",
-      "Exode": "Éxodo",
-      "Lévitique": "Levítico",
-      "Nombres": "Números",
-      "Deutéronome": "Deuteronomio",
-      "Josué": "Josué",
-      "Juges": "Jueces",
-      "Ruth": "Rut",
-      "I Samuel": "I Samuel",
-      "II Samuel": "II Samuel",
-      "I Rois": "I Reyes",
-      "II Rois": "II Reyes",
-      "I Chroniques": "I Crónicas",
-      "II Chroniques": "II Crónicas",
-      "Esdras": "Esdras",
-      "Néhémie": "Nehemías",
-      "Esther": "Ester",
-      "Job": "Job",
-      "Psaumes": "Salmos",
-      "Proverbes": "Proverbios",
-      "Ecclésiaste": "Eclesiastés",
-      "Cantique des Cantiques": "Cantar de los Cantares",
-      "Ésaïe": "Isaías",
-      "Jérémie": "Jeremías",
-      "Lamentations": "Lamentaciones",
-      "Ézéchiel": "Ezequiel",
-      "Daniel": "Daniel",
-      "Osée": "Oseas",
-      "Joël": "Joel",
-      "Amos": "Amós",
-      "Abdias": "Abdías",
-      "Jonas": "Jonás",
-      "Michée": "Miqueas",
-      "Nahum": "Nahúm",
-      "Habacuc": "Habacuc",
-      "Sophonie": "Sofonías",
-      "Aggée": "Hageo",
-      "Zacharie": "Zacarías",
-      "Malachie": "Malaquías",
-      "Matthieu": "Mateo",
-      "Marc": "Marcos",
-      "Luc": "Lucas",
-      "Jean": "Juan",
-      "Actes": "Hechos",
-      "Romains": "Romanos",
-      "I Corinthiens": "I Corintios",
-      "II Corinthiens": "II Corintios",
-      "Galates": "Gálatas",
-      "Éphésiens": "Efesios",
-      "Philippiens": "Filipenses",
-      "Colossiens": "Colosenses",
-      "I Thessaloniciens": "I Tesalonicenses",
-      "II Thessaloniciens": "II Tesalonicenses",
-      "I Timothée": "I Timoteo",
-      "II Timothée": "II Timoteo",
-      "Tite": "Tito",
-      "Philémon": "Filemón",
-      "Hébreux": "Hebreos",
-      "Jacques": "Santiago",
-      "I Pierre": "I Pedro",
-      "II Pierre": "II Pedro",
-      "I Jean": "I Juan",
-      "II Jean": "II Juan",
-      "III Jean": "III Juan",
-      "Jude": "Judas",
-      "Apocalypse": "Apocalipsis"
     },
     "ar": {
       "Nouveau Testament": "العهد الجديد",
       "Ancien Testament": "العهد القديم",
-      "Livres": "كتب",
-      "Genèse": "التكوين",
-      "Exode": "الخروج",
-      "Lévitique": "اللاويين",
-      "Nombres": "العدد",
-      "Deutéronome": "التثنية",
-      "Josué": "يشوع",
-      "Juges": "القضاة",
-      "Ruth": "راعوث",
-      "I Samuel": "١ صموئيل",
-      "II Samuel": "٢ صموئيل",
-      "I Rois": "١ ملوك",
-      "II Rois": "٢ ملوك",
-      "I Chroniques": "١ أخبار الأيام",
-      "II Chroniques": "٢ أخبار الأيام",
-      "Esdras": "عزرا",
-      "Néhémie": "نحميا",
-      "Esther": "أستير",
-      "Job": "أيوب",
-      "Psaumes": "المزامير",
-      "Proverbes": "الأمثال",
-      "Ecclésiaste": "الجامعة",
-      "Cantique des Cantiques": "نشيد الأنشاد",
-      "Ésaïe": "إشعياء",
-      "Jérémie": "إرميا",
-      "Lamentations": "مراثي",
-      "Ézéchiel": "حزقيال",
-      "Daniel": "دانيال",
-      "Osée": "هوشع",
-      "Joël": "يوئيل",
-      "Amos": "عاموس",
-      "Abdias": "عوبديا",
-      "Jonas": "يونان",
-      "Michée": "ميخا",
-      "Nahum": "ناحوم",
-      "Habacuc": "حبقوق",
-      "Sophonie": "صفنيا",
-      "Aggée": "حجي",
-      "Zacharie": "زكريا",
-      "Malachie": "ملاخي",
-      "Matthieu": "متى",
-      "Marc": "مرقس",
-      "Luc": "لوقا",
-      "Jean": "يوحنا",
-      "Actes": "أعمال الرسل",
-      "Romains": "رومية",
-      "I Corinthiens": "١ كورنثوس",
-      "II Corinthiens": "٢ كورنثوس",
-      "Galates": "غلاطية",
-      "Éphésiens": "أفسس",
-      "Philippiens": "فيلبي",
-      "Colossiens": "كولوسي",
-      "I Thessaloniciens": "١ تسالونيكي",
-      "II Thessaloniciens": "٢ تسالونيكي",
-      "I Timothée": "١ تيموثاوس",
-      "II Timothée": "٢ تيموثاوس",
-      "Tite": "تيطس",
-      "Philémon": "فليمون",
-      "Hébreux": "العبرانيين",
-      "Jacques": "يعقوب",
-      "I Pierre": "١ بطرس",
-      "II Pierre": "٢ بطرس",
-      "I Jean": "١ يوحنا",
-      "II Jean": "٢ يوحنا",
-      "III Jean": "٣ يوحنا",
-      "Jude": "يهوذا",
-      "Apocalypse": "الرؤيا"
+      "Livres": "كتب"
     },
     "pt": {
       "Nouveau Testament": "Novo Testamento",
       "Ancien Testament": "Antigo Testamento",
       "Livres": "Livros",
-      "Genèse": "Gênesis",
-      "Exode": "Êxodo",
-      "Lévitique": "Levítico",
-      "Nombres": "Números",
-      "Deutéronome": "Deuteronômio",
-      "Josué": "Josué",
-      "Juges": "Juízes",
-      "Ruth": "Rute",
-      "I Samuel": "I Samuel",
-      "II Samuel": "II Samuel",
-      "I Rois": "I Reis",
-      "II Rois": "II Reis",
-      "I Chroniques": "I Crônicas",
-      "II Chroniques": "II Crônicas",
-      "Esdras": "Esdras",
-      "Néhémie": "Neemias",
-      "Esther": "Ester",
-      "Job": "Jó",
-      "Psaumes": "Salmos",
-      "Proverbes": "Provérbios",
-      "Ecclésiaste": "Eclesiastes",
-      "Cantique des Cantiques": "Cântico dos Cânticos",
-      "Ésaïe": "Isaías",
-      "Jérémie": "Jeremias",
-      "Lamentations": "Lamentações",
-      "Ézéchiel": "Ezequiel",
-      "Daniel": "Daniel",
-      "Osée": "Oséias",
-      "Joël": "Joel",
-      "Amos": "Amós",
-      "Abdias": "Obadias",
-      "Jonas": "Jonas",
-      "Michée": "Miquéias",
-      "Nahum": "Naum",
-      "Habacuc": "Habacuque",
-      "Sophonie": "Sophonias",
-      "Aggée": "Ageu",
-      "Zacharie": "Zacarias",
-      "Malachie": "Malaquias",
-      "Matthieu": "Matthieu",
-      "Marc": "Marcos",
-      "Luc": "Lucas",
-      "Jean": "João",
-      "Actes des Apôtres": "Actes",
-      "Romains": "Romanos",
-      "I Corinthiens": "I Coríntios",
-      "II Corinthiens": "II Coríntios",
-      "Galates": "Gálatas",
-      "Éphésiens": "Efésios",
-      "Philippiens": "Filipenses",
-      "Colossiens": "Colossenses",
-      "I Thessaloniciens": "I Tessalonicenses",
-      "II Thessaloniciens": "II Tessalonicenses",
-      "I Timothée": "I Timóteo",
-      "II Timothée": "II Timóteo",
-      "Tite": "Tito",
-      "Philémon": "Filemom",
-      "Hébreux": "Hebreus",
-      "Jacques": "Tiago",
-      "I Pierre": "I Pedro",
-      "II Pierre": "II Pedro",
-      "I Jean": "I João",
-      "II Jean": "II João",
-      "III Jean": "III João",
-      "Jude": "Judas",
-      "Apocalypse": "Apocalipse"
     }
   };
 
@@ -692,13 +436,13 @@ class _BooksPageState extends State<BooksPage> {
                     children: List.generate(
                         books
                             .firstWhere((element) =>
-                                getTranslatedBookTitle(element.title, "en") ==
+                                getTranslatedBookTitle(element.title, widget.selectedLanguage) ==
                                 bookTitle)
                             .chapiters
                             .length, (index) {
                       Chapiter chapter = books
                           .firstWhere((element) =>
-                              getTranslatedBookTitle(element.title, "en") ==
+                              getTranslatedBookTitle(element.title, widget.selectedLanguage) ==
                               bookTitle)
                           .chapiters[index];
                       return SizedBox(
